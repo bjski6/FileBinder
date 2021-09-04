@@ -1,12 +1,23 @@
+import com.github.javafaker.Faker;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-        DirectoryCreator.createDirectory();
+        DirectoryCreator directoryCreator = new DirectoryCreator();
+        directoryCreator.createDirectory();
+
+        Scanner scanner = new Scanner(System.in);
+        Faker faker = new Faker();
+
+        DataInputManager dataInputManager = new DataInputManager(scanner);
+        TestDataGenerator testDataGenerator = new TestDataGenerator(dataInputManager, faker);
+        testDataGenerator.testDataGenerate();
+
         try {
-            FilesManager.moveFile();
+            FilesManager.segregateFiles();
         } catch (IOException e) {
             e.printStackTrace();
         }

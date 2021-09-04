@@ -1,15 +1,13 @@
+import Service.BinderUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 
 public class FilesManager {
 
@@ -17,7 +15,7 @@ public class FilesManager {
     private static Integer filesMovedToDev = 0;
     private static Integer filesMovedToTest = 0;
 
-    public static void moveFile() throws IOException {
+    public static void segregateFiles() throws IOException {
 
         File file = new File(Config.HOME);
         Path count = Config.getCountFilePath();
@@ -32,25 +30,12 @@ public class FilesManager {
             Path pathTest = Paths.get(Config.TEST, fileName);
 
             if (fileName.endsWith(".jar")) {
-                int hour = getFileCreationHour(fileName);
-                if (isEven(hour)) extractFile(pathHome, pathDev, true);
+                int hour = BinderUtils.getFileCreationTime(Config.HOME + fileName).getHour();
+                if (BinderUtils.isEven(hour)) extractFile(pathHome, pathDev, true);
                 else extractFile(pathHome, pathTest, false);
-            }
-            else if (fileName.endsWith(".xml")) extractFile(pathHome, pathDev, true);
+            } else if (fileName.endsWith(".xml")) extractFile(pathHome, pathDev, true);
         }
         makeReport(count);
-    }
-
-
-    private static boolean isEven(int value) {
-        return value % 2 == 0;
-    }
-
-    private static int getFileCreationHour(String fileName) throws IOException {
-        BasicFileAttributeView attributes = Files.getFileAttributeView(Paths.get(Config.HOME + fileName), BasicFileAttributeView.class);
-        BasicFileAttributes attr = attributes.readAttributes();
-        LocalDateTime localDateTime = attr.creationTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return localDateTime.getHour();
     }
 
 
@@ -82,5 +67,4 @@ public class FilesManager {
             else filesMoved = result;
         }
     }
-
 }
