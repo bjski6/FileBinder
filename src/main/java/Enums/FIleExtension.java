@@ -4,7 +4,8 @@ public enum FIleExtension {
     MP3(".mp3"),
     JAR(".jar"),
     PDF(".pdf"),
-    XML(".xml");
+    XML(".xml"),
+    JPG(".jpeg");
 
     public String extension;
 
